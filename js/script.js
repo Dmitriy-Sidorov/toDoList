@@ -66,7 +66,23 @@ function editTask() {
 }
 
 function finishTask() {
-    console.log('перенос в завершенные задачи')
+    var listItem = this.parentNode,
+        checkbox = listItem.querySelector('button.checkbox');
+    checkbox.className = 'material-icons checkbox';
+    checkbox.innerHTML = '<i class="material-icons">check_box</i>';
+
+    inputFinishedTask.appendChild(listItem);
+    bindTaskEvents(listItem, unfinishTask);
+}
+
+function unfinishTask() {
+    var listItem = this.parentNode,
+        checkbox = listItem.querySelector('button.checkbox');
+    checkbox.className = 'material-icons checkbox';
+    checkbox.innerHTML = '<i class="material-icons">check_box_outline_blank</i>';
+
+    inputUnfinishedTask.appendChild(listItem);
+    bindTaskEvents(listItem, finishTask);
 }
 
 function bindTaskEvents(listItem, checkboxEvent) {
