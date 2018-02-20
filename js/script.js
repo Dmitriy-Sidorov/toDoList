@@ -36,6 +36,7 @@ function addTask() {
         bindTaskEvents(listItem, finishTask);
         inputNewTask.value = "";
     }
+    saveData();
 }
 
 addButton.onclick = addTask;
@@ -44,6 +45,7 @@ function deleteTask() {
     var listItem = this.parentNode,
         itemRemove = listItem.parentNode;
     itemRemove.removeChild(listItem);
+    saveData();
 }
 
 function editTask() {
@@ -57,6 +59,7 @@ function editTask() {
         label.innerText = input.value;
         editButton.className = 'material-icons edit';
         editButton.innerHTML = '<i class="material-icons">edit</i>';
+        saveData();
     } else {
         input.value = label.innerText;
         editButton.className = 'material-icons save';
@@ -73,6 +76,7 @@ function finishTask() {
 
     inputFinishedTask.appendChild(listItem);
     bindTaskEvents(listItem, unfinishTask);
+    saveData();
 }
 
 function unfinishTask() {
@@ -83,6 +87,7 @@ function unfinishTask() {
 
     inputUnfinishedTask.appendChild(listItem);
     bindTaskEvents(listItem, finishTask);
+    saveData();
 }
 
 function bindTaskEvents(listItem, checkboxEvent) {
@@ -93,4 +98,38 @@ function bindTaskEvents(listItem, checkboxEvent) {
     checkbox.onclick = checkboxEvent;
     editButton.onclick = editTask;
     deleteButton.onclick = deleteTask;
+}
+
+function saveData() {
+    var unfinishedTasksArr = [];
+    var finishedTasksArr = [];
+    for (var i = 0; i < inputUnfinishedTask.children.length; i++) {
+        unfinishedTasksArr.push(inputUnfinishedTask.children[i].querySelector('label').innerText);
+    }
+    for (i = 0; i < inputFinishedTask.children.length; i++) {
+        finishedTasksArr.push(inputFinishedTask.children[i].querySelector('label').innerText);
+    }
+
+    localStorage.removeItem('');
+    localStorage.setItem('todo', JSON.stringify({
+        inputUnfinishedTask: unfinishedTasksArr,
+        inputFinishedTask: finishedTasksArr
+    }));
+}
+
+function load() {
+    return JSON.parse(localStorage.getItem('todo'));
+}
+
+var data = load();
+
+for (var i = 0; i < data.inputUnfinishedTask.length; i++) {
+    var listItem = createNewElement(data.inputUnfinishedTask[i]);
+    inputUnfinishedTask.appendChild(listItem);
+    bindTaskEvents(listItem, finishTask);
+}
+for (i = 0; i < data.inputFinishedTask.length; i++) {
+    listItem = createNewElement(data.inputFinishedTask[i]);
+    inputFinishedTask.appendChild(listItem);
+    bindTaskEvents(listItem, unfinishTask);
 }
